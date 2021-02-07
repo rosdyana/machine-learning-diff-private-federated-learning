@@ -23,7 +23,7 @@ Suppose that we have run an algorithm with parameters, an array of
 (q1, sigma1, T1) ... (qk, sigmak, Tk), and we wish to compute eps for a given
 delta. The example code would be:
   max_lmbd = 32
-  lmbds = xrange(1, max_lmbd + 1)
+  lmbds = range(1, max_lmbd + 1)
   log_moments = []
   for lmbd in lmbds:
     log_moment = 0
@@ -90,10 +90,10 @@ def compute_a(sigma, q, lmbd, verbose=False):
 
   a_lambda_first_term_exact = 0
   a_lambda_second_term_exact = 0
-  for i in xrange(lmbd_int + 1):
+  for i in range(lmbd_int + 1):
     coef_i = scipy.special.binom(lmbd_int, i) * (q ** i)
     s1, s2 = 0, 0
-    for j in xrange(i + 1):
+    for j in range(i + 1):
       coef_j = scipy.special.binom(i, j) * (-1) ** (i - j)
       s1 += coef_j * np.exp((j * j - j) / (2.0 * (sigma ** 2)))
       s2 += coef_j * np.exp((j * j + j) / (2.0 * (sigma ** 2)))

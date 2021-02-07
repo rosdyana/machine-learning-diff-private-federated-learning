@@ -160,7 +160,7 @@ def run_differentially_private_federated_averaging(loss, train_op, eval_correct,
     data_set_asarray = np.asarray(data.sorted_x_train)
     label_set_asarray = np.asarray(data.sorted_y_train)
 
-    for r in xrange(FLAGS.max_comm_rounds):
+    for r in range(FLAGS.max_comm_rounds):
 
         # First, we check whether we are loading a model, if so, we have to skip the first allocation, as it took place
         # already.
@@ -232,8 +232,8 @@ def run_differentially_private_federated_averaging(loss, train_op, eval_correct,
             data_ind = np.split(np.asarray(participating_clients[c]), FLAGS.b, 0)
 
             # e = Epoch
-            for e in xrange(int(FLAGS.e)):
-                for step in xrange(len(data_ind)):
+            for e in range(int(FLAGS.e)):
+                for step in range(len(data_ind)):
                     # increase the global_step count (it's used for the learning rate.)
                     real_step = sess.run(increase_global_step)
                     # batch_ind holds the indices of the current batch

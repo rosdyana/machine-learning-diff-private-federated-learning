@@ -15,6 +15,9 @@ class PrivAgent:
     def __init__(self, N, Name):
         self.N = N
         self.Name = Name
+        self.m = [2]*N
+        self.Sigma = [1]*24
+        self.bound = 0.1/N
         if N == 100:
             self.m = [30]*100
             self.Sigma = [1]*24
@@ -27,10 +30,11 @@ class PrivAgent:
             self.m = [300]*10
             self.Sigma = [1]*24
             self.bound = 0.000001
-        if(N != 100 and N != 1000 and N != 10000 ):
-            print('!!!!!!! YOU CAN ONLY USE THE PRIVACY AGENT FOR N = 100, 1000 or 10000 !!!!!!!')
+        # if(N != 100 and N != 1000 and N != 10000 ):
+        #     print('!!!!!!! YOU CAN ONLY USE THE PRIVACY AGENT FOR N = 100, 1000 or 10000 !!!!!!!')
 
     def get_m(self, r):
+        print("************** R is {}".format(r))
         return self.m[r]
 
     def get_Sigma(self, r):
@@ -163,7 +167,7 @@ def create_save_dir(FLAGS):
             int(FLAGS.e)) + '_Batches_' + str(int(FLAGS.b))
         return raw_directory + str(model) + '/' + FLAGS.PrivAgentName
     else:
-        model = gm_str + 'N_' + str(FLAGS.n) + '/Sigma_' + str(FLAGS.Sigma) + '_C_'+str(FLAGS.m)+'/Epochs_' + str(
+        model = gm_str + 'N_' + str(FLAGS.n) + '/Sigma_' + str(FLAGS.sigma) + '_C_'+str(FLAGS.m)+'/Epochs_' + str(
             int(FLAGS.e)) + '_Batches_' + str(int(FLAGS.b))
         return raw_directory + str(model)
 
@@ -208,7 +212,7 @@ def load_from_directory_or_initialize(directory, FLAGS):
         #               set FLAGS.loaded = TRUE
         #               set FLAGS.relearn = TRUE
         if os.path.isfile(directory + '/specs.csv'):
-            with open(directory + '/specs.csv', 'rb') as csvfile:
+            with open(directory + '/specs.csv', 'r') as csvfile:
                 reader = csv.reader(csvfile)
                 Lines = []
                 for line in reader:
@@ -272,7 +276,7 @@ def save_progress(save_dir, model, Delta_accountant, Accuracy_accountant, Privac
         # I.e. we know that there was no progress stored at 'save_dir' and we create a new csv-file that
         # Will hold the accuracy, the deltas, the m's and we also save the model learned as a .pkl file
 
-        with open(save_dir + '/specs.csv', 'wb') as csvfile:
+        with open(save_dir + '/specs.csv', 'w') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')
             if FLAGS.priv_agent == True:
                 writer.writerow([0]+[PrivacyAgent.get_m(r) for r in range(len(Delta_accountant)-1)])
@@ -295,7 +299,7 @@ def save_progress(save_dir, model, Delta_accountant, Accuracy_accountant, Privac
                     lines.append([float(i) for i in row])
                 lines = lines[:-1]
 
-            with open(save_dir + '/specs.csv', 'wb') as csvfile:
+            with open(save_dir + '/specs.csv', 'w') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',')
                 for line in lines:
                     writer.writerow(line)
@@ -359,11 +363,11 @@ def check_validaity_of_FLAGS(FLAGS):
     if not FLAGS.m == 0:
         if FLAGS.sigma == 0:
             print('\n \n -------- If m is specified the Privacy Agent is not used, then Sigma has to be specified too. --------\n \n')
-            raise NotImplementedError
+            raise NotImplementedError("If m is specified the Privacy Agent is not used, then Sigma has to be specified too.")
     if not FLAGS.sigma == 0:
         if FLAGS.m ==0:
             print('\n \n-------- If Sigma is specified the Privacy Agent is not used, then m has to be specified too. -------- \n \n')
-            raise NotImplementedError
+            raise NotImplementedError("If Sigma is specified the Privacy Agent is not used, then m has to be specified too.")
     if not FLAGS.sigma == 0 and not FLAGS.m == 0:
         FLAGS.priv_agent = False
     return FLAGS

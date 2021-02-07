@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 import os
+import sys
 
 def create_clients(num, dir):
 
@@ -22,7 +23,7 @@ def create_clients(num, dir):
     buckets = []
     for k in range(num_classes):
         temp = []
-        for j in range(num / 100):
+        for j in range(num // 100):
             temp = np.hstack((temp, k * num_examples/10 + np.random.permutation(int(num_examples/10))))
         buckets = np.hstack((buckets, temp))
     shards = 2 * num
@@ -43,6 +44,8 @@ def create_clients(num, dir):
     print('client created at: '+dir + '/'+str(num)+'_clients.pkl')
 
 if __name__ == '__main__':
-    List_of_clients = [100,200,500,1000,2000,5000,10000]
-    for j in List_of_clients:
-        create_clients(j, os.getcwd()+'/DATA/clients')
+    # List_of_clients = [100,200,500,1000,2000,5000,10000]
+    # for j in List_of_clients:
+    #     create_clients(j, os.getcwd()+'/DATA/clients')
+    clientArg = int(sys.argv[1])
+    create_clients(clientArg, os.getcwd()+'/DATA/clients')
